@@ -127,3 +127,8 @@ test-suite Mazelib-test
     build-depends:
         base ^>=4.16.4.0,
         Mazelib
+
+    source-repository head
+        type: git
+        location: https://github.com/ImJustTrying/Mazelib
+

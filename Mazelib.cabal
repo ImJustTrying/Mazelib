@@ -11,7 +11,7 @@ cabal-version:      3.0
 --   http://haskell.org/cabal/users-guide/
 --
 -- The name of the package.
-name:               Mazelib
+name:               mazelib
 
 -- The package version.
 -- See the Haskell package versioning policy (PVP) for standards
@@ -23,10 +23,42 @@ name:               Mazelib
 version:            0.1.0.0
 
 -- A short (one-line) description of the package.
-synopsis:           A library for maze generation and solving
+synopsis:           A library for 2D maze generation and solving
 
 -- A longer description of the package.
--- description:
+description:
+    >>> :{
+    let maze = generateMaze Backtracking (3, 3) $ Just (mkStdGen 123)
+    in case maze of
+        Left e -> e
+        Right m ->
+            let (start, end) = fromMaybe ((1,1), (3,3)) $ generateExits m
+            in do
+                putStrLn $ mazeToString m
+                let path = solveMaze m coords $ mkStdGen 123
+                putStrLn $ pathToString m path
+    :}
+    +++++++
+    +     +
+    +++++ +
+    +   + +
+    + + + +
+    + +   +
+    +++++++
+    +++++++
+    OOOOOO+
+    +++++O+
+    +OOO+O+
+    +O+O+O+
+    +O+OOO+
+    +O+++++
+    .
+    An (N x M) Maze is represented in memory as a (2N + 1 x 2M + 1) boolean matrix. 
+    In an idealized maze, walls are 0 width, but in memory they are width 1, thus 
+    the larger size. From this we infer that coordinates (x, y) where both x and y 
+    are odd integers map to the coordinates in the ideal maze -- i.e. 
+    @(x, y) -> (x - 1 $ `div` 2, y - 1 $ `div` 2)@. 
+
 
 -- The license under which the package is released.
 license:            GPL-3.0-or-later
@@ -58,7 +90,9 @@ library
     import:           warnings
 
     -- Modules exported by the library.
-    exposed-modules:  Mazelib
+    exposed-modules:
+        Mazelib.Generate
+        Mazelib.Solve
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -69,7 +103,8 @@ library
     -- Other library packages from which modules are imported.
     build-depends:
         base ^>=4.16.4.0,
-        random ^>=1.2.0.0
+        random ^>=1.2.0.0,
+        array ^>=0.5.5.0
 
     -- Directories containing source files.
     hs-source-dirs:   src
@@ -77,31 +112,8 @@ library
     -- Base language which the package is written in.
     default-language: Haskell2010
 
-executable Mazelib
-    -- Import common warning flags.
-    import:           warnings
 
-    -- .hs or .lhs file containing the Main module.
-    main-is:          Main.hs
-
-    -- Modules included in this executable, other than Main.
-    -- other-modules:
-
-    -- LANGUAGE extensions used by modules in this package.
-    -- other-extensions:
-
-    -- Other library packages from which modules are imported.
-    build-depends:
-        base ^>=4.16.4.0,
-        Mazelib
-
-    -- Directories containing source files.
-    hs-source-dirs:   app
-
-    -- Base language which the package is written in.
-    default-language: Haskell2010
-
-test-suite Mazelib-test
+test-suite generate-tests
     -- Import common warning flags.
     import:           warnings
 
@@ -121,14 +133,40 @@ test-suite Mazelib-test
     hs-source-dirs:   test
 
     -- The entrypoint to the test suite.
-    main-is:          Main.hs
+    main-is:          Generate.hs
 
     -- Test dependencies.
     build-depends:
         base ^>=4.16.4.0,
         Mazelib
 
-    source-repository head
-        type: git
-        location: https://github.com/ImJustTrying/Mazelib
+test-suite solve-tests
+    -- Import common warning flags.
+    import:           warnings
 
+    -- Base language which the package is written in.
+    default-language: Haskell2010
+
+    -- Modules included in this executable, other than Main.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+
+    -- The interface type and version of the test suite.
+    type:             exitcode-stdio-1.0
+
+    -- Directories containing source files.
+    hs-source-dirs:   test
+
+    -- The entrypoint to the test suite.
+    main-is:          Solve.hs
+
+    -- Test dependencies.
+    build-depends:
+        base ^>=4.16.4.0,
+        Mazelib
+
+source-repository head
+	type:     git
+	location: https://github.com/ImJustTrying/Mazelib

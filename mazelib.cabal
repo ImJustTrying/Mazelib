@@ -22,37 +22,30 @@ name:               mazelib
 --                  | | | +--- code changes with no API change
 version:            0.1.0.0
 
+category:           Library
+
 -- A short (one-line) description of the package.
 synopsis:           A library for 2D maze generation and solving
 
 -- A longer description of the package.
 description:
     >>> :{
-    let maze = generateMaze Backtracking (3, 3) $ Just (mkStdGen 123)
-    in case maze of
-        Left e -> e
-        Right m ->
-            let (start, end) = fromMaybe ((1,1), (3,3)) $ generateExits m
-            in do
-                putStrLn $ mazeToString m
-                let path = solveMaze m coords $ mkStdGen 123
-                putStrLn $ pathToString m path
+    let result = generateMaze Backtracking (3, 3) $ Just (mkStdGen 123)
+    in case result of
+        Left e ->
+            do putStrLn e
+        Right (maze, exits) ->
+            let path = solveMaze maze exits Nothing
+            in do putStrLn $ mazeToString maze exits (Just path)
     :}
     +++++++
-    +     +
-    +++++ +
-    +   + +
-    + + + +
-    + +   +
-    +++++++
-    +++++++
-    OOOOOO+
+    SOOOOO+
     +++++O+
     +OOO+O+
     +O+O+O+
     +O+OOO+
-    +O+++++
-    .
+    +E+++++
+
     An (N x M) Maze is represented in memory as a (2N + 1 x 2M + 1) boolean matrix. 
     In an idealized maze, walls are 0 width, but in memory they are width 1, thus 
     the larger size. From this we infer that coordinates (x, y) where both x and y 
@@ -95,7 +88,8 @@ library
         Mazelib.Solve
 
     -- Modules included in this library but not exported.
-    -- other-modules:
+    other-modules:
+        Mazelib.Common
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -168,5 +162,5 @@ test-suite solve-tests
         Mazelib
 
 source-repository head
-	type:     git
-	location: https://github.com/ImJustTrying/Mazelib
+    type:     git
+    location: https://github.com/ImJustTrying/Mazelib

@@ -105,8 +105,8 @@ generateMaze ::
     GenerationMethod  ->        -- ^ The desired generation method
     (Int, Int)        ->        -- ^ The size of the maze as (rows, columns)
     Maybe Rand.StdGen ->        -- ^ Possibly an RNG, or use the default
-    Either String (Maze, Exits) {- ^ Either an error message (Left) or the
-        generated maze and exits (Right) -}
+    Either String (Maze, Exits)
+    -- ^ Either an error message (Left) or the generated maze and exits (Right)
 generateMaze method (nrows, ncols) generator = 
     if nrows < 3 || ncols < 3 then
         Left "Error: mazes must be at least 3x3"

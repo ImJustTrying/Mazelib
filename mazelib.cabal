@@ -127,12 +127,13 @@ test-suite generate-tests
     hs-source-dirs:   test
 
     -- The entrypoint to the test suite.
-    main-is:          Generate.hs
+    main-is:          TestGenerate.hs
 
     -- Test dependencies.
     build-depends:
         base ^>=4.16.4.0,
-        Mazelib
+        random ^>=1.2.0.0,
+        mazelib
 
 test-suite solve-tests
     -- Import common warning flags.
@@ -154,13 +155,14 @@ test-suite solve-tests
     hs-source-dirs:   test
 
     -- The entrypoint to the test suite.
-    main-is:          Solve.hs
+    main-is:          TestSolve.hs
 
     -- Test dependencies.
     build-depends:
         base ^>=4.16.4.0,
-        Mazelib
+        random ^>=1.2.0.0,
+        mazelib
 
 source-repository head
     type:     git
-    location: https://github.com/ImJustTrying/Mazelib
+    location: https://github.com/ImJustTrying/Mazelib.git

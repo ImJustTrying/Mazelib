@@ -16,11 +16,13 @@ module Mazelib.Solve
     , Exits 
     , mazeToString
     , solveMaze
+    , cleanPath
     ) where 
 
 
 import qualified System.Random as Rand
 import Data.Maybe (fromMaybe)
+import Data.List (elemIndices)
 import Mazelib.Common
 
 -- | Various methods for solving a 2D maze
@@ -32,6 +34,24 @@ data SolutionMethod =
     -- visited cell
     RecursiveBacktracker
 
+-- | A function to remove cells that are not on the path from the start to the 
+-- end of the maze -- a natural byproduct of some solution methods.
+cleanPath :: Path -> Path
+cleanPath path = 
+    let removeSlice cell cells =
+            case elemIndices cell cells of
+                [] -> cells
+                indices -> drop (maximum indices + 1) cells
+        recursivelyRemove index cells = 
+            if index >= length cells then 
+                cells 
+            else let 
+                i = index + 1
+                before = take i cells 
+                after = drop i cells
+            in recursivelyRemove i $
+                before ++ removeSlice (cells !! index) after
+    in recursivelyRemove 0 path
 
 solveRandomWalker :: (Int, Int) -> Maze -> Exits -> Rand.StdGen -> Path -> Path
 solveRandomWalker current maze exits gen path =

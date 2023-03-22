@@ -35,7 +35,7 @@ description:
         Left e ->
             do putStrLn e
         Right (maze, exits) ->
-            let path = solveMaze maze exits Nothing
+            let path = cleanPath $ solveMaze maze exits Nothing
             in do putStrLn $ mazeToString maze exits (Just path)
     :}
     +++++++
@@ -97,8 +97,7 @@ library
     -- Other library packages from which modules are imported.
     build-depends:
         base ^>=4.16.4.0,
-        random ^>=1.2.0.0,
-        array ^>=0.5.5.0
+        random ^>=1.2.0.0
 
     -- Directories containing source files.
     hs-source-dirs:   src

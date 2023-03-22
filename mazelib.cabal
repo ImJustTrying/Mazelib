@@ -30,7 +30,7 @@ synopsis:           A library for 2D maze generation and solving
 -- A longer description of the package.
 description:
     >>> :{
-    let result = generateMaze Backtracking (3, 3) $ Just (mkStdGen 123)
+    let result = generateMaze AldousBroder (3, 3) $ Just (mkStdGen 123)
     in case result of
         Left e ->
             do putStrLn e
